@@ -23,7 +23,7 @@ $result = $conn->query($sql);
 $data = [['City', 'Parent', 'Population', 'Color']];
 
 // Adicionar entrada para o Brasil com a população fixa
-$data[] = ['Brasil', null,  203080756, 203080756];
+$data[] = ['Brasil', null, 203080756, 203080756];
 
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
@@ -48,22 +48,28 @@ $json_data = json_encode($data, JSON_UNESCAPED_UNICODE);
     <html lang="en">
 
     <head>
-        <!-- ... (seu código existente) ... -->
+        <!-- Google Charts - Incluindo a biblioteca do Google Charts -->
         <script type="text/javascript" src="http://www.gstatic.com/charts/loader.js"></script>
         <script type="text/javascript">
+            // Carregar a biblioteca do Google Charts com o pacote 'treemap' quando estiver pronta
             google.charts.load('current', {
                 'packages': ['treemap']
             });
+
+            // Executar a função drawChart após o carregamento da biblioteca
             google.charts.setOnLoadCallback(drawChart);
 
             function drawChart() {
-                // Usar dados dinâmicos obtidos do PHP
+                // Usar dados dinâmicos obtidos do PHP convertidos para um objeto DataTable do Google Charts
                 var data = google.visualization.arrayToDataTable(<?php echo $json_data; ?>);
 
-                console.log(data); // Adicione esta linha para depuração
+                // Exibir os dados no console para depuração
+                console.log(data);
 
+                // Criar um objeto TreeMap e associá-lo ao elemento HTML com o id 'chart_div'
                 tree = new google.visualization.TreeMap(document.getElementById('chart_div'));
 
+                // Desenhar o TreeMap com as opções de estilo
                 tree.draw(data, {
                     minColor: '#f00',
                     midColor: '#ddd',
@@ -74,6 +80,7 @@ $json_data = json_encode($data, JSON_UNESCAPED_UNICODE);
                     generateTooltip: showFullTooltip
                 });
 
+                // Função para gerar o conteúdo do tooltip personalizado
                 function showFullTooltip(row, size, value) {
                     // Se o mouse estiver sobre o Brasil (linha 0)
                     if (row === 0) {
@@ -83,6 +90,7 @@ $json_data = json_encode($data, JSON_UNESCAPED_UNICODE);
                         // Formata o valor usando pontos para milhares e vírgulas para decimais
                         var formattedPopulacaoBrasil = populacaoBrasil.toLocaleString('pt-BR');
 
+                        // Retorna o conteúdo HTML do tooltip personalizado para o Brasil
                         return '<div style="background:#fd9; padding:10px; border-style:solid">' +
                             '<span style="font-family:Courier"><b>' + data.getValue(row, 0) + '</b></span><br>' +
                             'População do Brasil: ' + formattedPopulacaoBrasil +
@@ -105,6 +113,7 @@ $json_data = json_encode($data, JSON_UNESCAPED_UNICODE);
                         var formattedPorcentagem = porcentagem.toFixed(
                         2); // Ajuste o número de casas decimais conforme necessário
 
+                        // Retorna o conteúdo HTML do tooltip personalizado para uma cidade
                         return '<div style="background:#fd9; padding:10px; border-style:solid">' +
                             '<span style="font-family:Courier"><b>' + data.getValue(row, 0) + '</b></span><br>' +
                             'População da Cidade: ' + formattedPopulacaoCidade + '<br>' +
@@ -112,11 +121,9 @@ $json_data = json_encode($data, JSON_UNESCAPED_UNICODE);
                             '</div>';
                     }
                 }
-
-
-
             }
         </script>
+
     </head>
 
     <body>
