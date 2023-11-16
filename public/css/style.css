@@ -1,0 +1,21 @@
+.navbar-brand img{
+    width: 50px;
+}
+
+.btn-voltar {
+    background-color: #28a745; /* Cor verde */
+    color: #fff; /* Cor do texto */
+    border: none; /* Removendo a borda */
+    padding: 10px 20px; /* Espaçamento interno */
+    border-radius: 5px; /* Borda arredondada */
+    cursor: pointer; /* Cursor apontando */
+    align-items: center;
+    text-align: center;
+
+  }
+
+  /* Efeito de hover */
+  .btn-voltar:hover {
+    background-color: #218838; 
+    color: #fff;/* Cor verde mais escura no hover */
+  }
