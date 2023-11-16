@@ -41,7 +41,7 @@ $json_data = json_encode($data, JSON_UNESCAPED_UNICODE);
 
 @extends('layouts.main')
 
-@section('title', 'HDC EVENTS')
+@section('title', 'Gráfico Treemap')
 
 @section('content')
 <!DOCTYPE html>
@@ -116,17 +116,16 @@ $json_data = json_encode($data, JSON_UNESCAPED_UNICODE);
         <div id="chart_div" style="width: 100%; height: 400px;"></div>
     </div>
 
-    <!-- Adicionando um botão de volta -->
     <div class="d-flex justify-content-center align-items-center mt-3">
-        <button onclick="voltarParaPrincipal()" class="btn btn-voltar">Voltar para a Área Principal</button>
-    </div>
+    <p class="text-center">
+        Para voltar ao gráfico anterior, clique com o botão direito do mouse.
+    </p>
+</div>
 
-    <!-- Função para voltar para a área principal -->
-    <script>
-        function voltarParaPrincipal() {
-            window.location.reload(); // Isso recarregará a página sem atualizar a tela
-        }
-    </script>
+<!-- Adicionando a imagem do mouse -->
+<div class="d-flex justify-content-center align-items-center">
+    <img src="/img/mouse.png" alt="Mouse" width="50">
+</div>
 
     <!-- Adicionando o Bootstrap JS e jQuery (necessários para alguns recursos do Bootstrap) -->
     <script src="http://www.gstatic.com/charts/loader.js"></script>

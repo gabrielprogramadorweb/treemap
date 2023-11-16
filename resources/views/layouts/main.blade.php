@@ -13,7 +13,9 @@
 
     <!-- Css da aplicação -->
     <link rel="stylesheet" href="/css/style.css">
-
+    <!-- Ico da aplicação -->
+    <link rel="icon" href="{{ asset('img/favicon.ico') }}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ asset('img/favicon.ico') }}" type="image/x-icon">
 </head>
 <body>
 
@@ -21,9 +23,9 @@
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container">
                 <a href="/" class="navbar-brand">
-                    <img src="/img/treemap.png" alt="logo">
+                    <img src="/img/treemap.png" alt="logo" class="img-fluid"> <!-- Adicionado img-fluid para tornar a imagem responsiva -->
                 </a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
@@ -35,17 +37,17 @@
                 </div>
             </div>
         </nav>
-        
     </header>
 
-    @yield('content')
+    <div class="container mt-4"> <!-- Adicionado container para centralizar o conteúdo e dar algum espaço ao redor -->
+        @yield('content')
+    </div>
 
     <footer class="footer mt-5 py-3 bg-dark text-white">
         <div class="container text-center">
-          <p class="mb-0">&copy; <?php echo date("Y"); ?> Gabriel Developer. Todos os direitos reservados.</p>
+            <p class="mb-0">&copy; <?php echo date("Y"); ?> Gabriel Developer. Todos os direitos reservados.</p>
         </div>
-      </footer>
-      
+    </footer>
 
     <!-- Scripts JavaScript -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

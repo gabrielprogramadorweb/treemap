@@ -29,5 +29,6 @@ class ChartController extends Controller
     public function columnChart()
     {
         return view('column-chart');
+        
     }
 }
