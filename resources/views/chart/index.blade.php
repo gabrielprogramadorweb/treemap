@@ -23,7 +23,7 @@ $result = $conn->query($sql);
 $data = [['City', 'Parent', 'Population', 'Color']];
 
 // Adicionar entrada para o Brasil com a população fixa
-$data[] = ['Brasil', null, 214300000, 214300000];
+$data[] = ['Brasil', null,  203080756, 203080756];
 
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {

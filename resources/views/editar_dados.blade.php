@@ -79,7 +79,7 @@ $json_data = json_encode($data, JSON_UNESCAPED_UNICODE);
                                 </div>
                                 <div class="form-group">
                                     <label for="populacao">População:</label>
-                                    <input type="text" class="form-control" name="populacao">
+                                    <input type="text" class="form-control" name="populacao" placeholder="Apenas números (exemplo: 123234829)">
                                 </div>
                                 <button type="submit" class="btn btn-primary">Atualizar</button>
                             </form>
@@ -108,7 +108,7 @@ $json_data = json_encode($data, JSON_UNESCAPED_UNICODE);
                                 </div>
                                 <div class="form-group">
                                     <label for="nova_populacao">Nova População:</label>
-                                    <input type="text" class="form-control" name="nova_populacao">
+                                    <input type="text" class="form-control" name="nova_populacao" placeholder="Apenas números (exemplo: 123234829)">
                                 </div>
                                 <button type="submit" class="btn btn-success">Adicionar</button>
                             </form>
