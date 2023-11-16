@@ -80,15 +80,14 @@ $json_data = json_encode($data, JSON_UNESCAPED_UNICODE);
 
                 // Desenhar o TreeMap com as opções de estilo
                 tree.draw(data, {
-                    minColor: '#f00',
-                    midColor: '#00FF00FF ',
-                    maxColor: '#0d0',
-                    headerHeight: 20, // Ajuste conforme necessário
-                    fontColor: 'black',
-                    showScale: true,
-                    generateTooltip: showFullTooltip
+                    minColor: '#f00', // Cor mínima (vermelho)
+                    midColor: '#00FF00FF', // Cor intermediária (verde claro)
+                    maxColor: '#0d0', // Cor máxima (verde escuro)
+                    headerHeight: 50, // Altura do cabeçalho
+                    fontColor: 'black', // Cor do texto
+                    showScale: true, // Exibir escala de cores
+                    generateTooltip: showFullTooltip // Função para gerar o conteúdo do tooltip personalizado
                 });
-
                 // Função para gerar o conteúdo do tooltip personalizado
                 function showFullTooltip(row, size, value) {
                     // Se o mouse estiver sobre o Brasil (linha 0)
@@ -120,7 +119,7 @@ $json_data = json_encode($data, JSON_UNESCAPED_UNICODE);
                         // Formata o valor usando pontos para milhares e vírgulas para decimais
                         var formattedPopulacaoCidade = populacaoCidade.toLocaleString('pt-BR');
                         var formattedPorcentagem = porcentagem.toFixed(
-                        2); // Ajuste o número de casas decimais conforme necessário
+                            2); // Ajuste o número de casas decimais conforme necessário
 
                         // Retorna o conteúdo HTML do tooltip personalizado para uma cidade
                         return '<div style="background:#fd9; padding:10px; border-style:solid">' +
