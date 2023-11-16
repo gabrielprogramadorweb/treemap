@@ -28,12 +28,15 @@ $data = [['City', 'Parent', 'Population', 'Color']];
 // Adicionar entrada para o Brasil com a população fixa
 $data[] = ['Brasil', null, 203080756, 203080756];
 
-// Verificar se há resultados da consulta
+// Isso verifica se o resultado da consulta ($result) contém mais de zero linhas. Em outras palavras, está verificando se há algum resultado retornado pela consulta, indicando que há registros no banco de dados.
 if ($result->num_rows > 0) {
-    // Loop através dos resultados da consulta (linhas)
+    // Este é um loop que percorre cada linha do resultado da consulta. fetch_assoc() é um método que retorna uma linha do conjunto de resultados como uma matriz associativa (um array onde os índices são nomes das colunas do banco de dados). A cada iteração do loop, a variável $row contém os dados de uma linha da tabela.
     while ($row = $result->fetch_assoc()) {
-        // Adicionar cada cidade como uma linha de dados no formato desejado para o Treemap
+        //  Nesta linha, estamos adicionando uma nova entrada ao array $data, que será usado posteriormente para criar o gráfico Treemap. Cada entrada do array representa uma linha de dados no formato desejado para o Treemap. Os elementos do array correspondem às colunas da tabela no banco de dados.
         $data[] = [$row['cidade'], 'Brasil', (int) $row['populacao'], (int) $row['populacao']];
+        // $row['cidade']: Representa o nome da cidade, obtido da coluna 'cidade' no banco de dados.
+        // 'Brasil': Indica que a cidade pertence ao Brasil. Esta é uma entrada fixa, pois todas as cidades estão sendo agrupadas sob o Brasil no Treemap.
+        // (int) $row['populacao']: Representa a população da cidade, convertida para um número inteiro. Isso é importante para garantir que os valores numéricos sejam tratados corretamente no gráfico.
     }
 }
 
@@ -78,7 +81,7 @@ $json_data = json_encode($data, JSON_UNESCAPED_UNICODE);
                 // Desenhar o TreeMap com as opções de estilo
                 tree.draw(data, {
                     minColor: '#f00',
-                    midColor: '#ddd',
+                    midColor: '#00FF00FF ',
                     maxColor: '#0d0',
                     headerHeight: 20, // Ajuste conforme necessário
                     fontColor: 'black',
