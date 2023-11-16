@@ -1,15 +1,16 @@
 <?php
 // Conectar ao banco de dados (substitua com suas credenciais)
-$servername = 'localhost';
-$username = 'root';
-$password = '';
-$dbname = 'dados';
+$servername = 'localhost'; // Endereço do servidor MySQL
+$username = 'root'; // Nome de usuário do MySQL
+$password = ''; // Senha do MySQL
+$dbname = 'dados'; // Nome do banco de dados
 
 // Conexão ao banco de dados usando o modelo mysqli (não é Laravel ORM)
 $conn = new mysqli($servername, $username, $password, $dbname);
 
 // Verificar a conexão
 if ($conn->connect_error) {
+    // Se a conexão falhar, encerra o script e exibe uma mensagem de erro
     die('Conexão falhou: ' . $conn->connect_error);
 } else {
     // A conexão foi bem-sucedida
@@ -17,6 +18,8 @@ if ($conn->connect_error) {
 
 // Consulta SQL para obter dados da tabela 'dados'
 $sql = 'SELECT cidade, populacao FROM dados';
+
+// Executar a consulta e armazenar o resultado na variável $result
 $result = $conn->query($sql);
 
 // Formatar os dados para o Treemap
@@ -25,9 +28,11 @@ $data = [['City', 'Parent', 'Population', 'Color']];
 // Adicionar entrada para o Brasil com a população fixa
 $data[] = ['Brasil', null, 203080756, 203080756];
 
+// Verificar se há resultados da consulta
 if ($result->num_rows > 0) {
+    // Loop através dos resultados da consulta (linhas)
     while ($row = $result->fetch_assoc()) {
-        // Adicionar cada cidade como uma linha de dados
+        // Adicionar cada cidade como uma linha de dados no formato desejado para o Treemap
         $data[] = [$row['cidade'], 'Brasil', (int) $row['populacao'], (int) $row['populacao']];
     }
 }
@@ -38,6 +43,7 @@ $conn->close();
 // Converter dados para formato JSON usando a função json_encode do PHP
 $json_data = json_encode($data, JSON_UNESCAPED_UNICODE);
 ?>
+
 
 @extends('layouts.main')
 
