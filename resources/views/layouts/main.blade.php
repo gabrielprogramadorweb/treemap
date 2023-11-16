@@ -23,7 +23,7 @@
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container">
                 <a href="/" class="navbar-brand">
-                    <img src="/img/treemap.png" alt="logo" class="img-fluid"> <!-- Adicionado img-fluid para tornar a imagem responsiva -->
+                    <img src="/img/treemap.png" alt="logo" class="img-fluid"> 
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -39,7 +39,7 @@
         </nav>
     </header>
 
-    <div class="container mt-4"> <!-- Adicionado container para centralizar o conteúdo e dar algum espaço ao redor -->
+    <div class="container mt-4">
         @yield('content')
     </div>
 
