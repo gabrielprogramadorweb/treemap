@@ -13,5 +13,6 @@ class Dado extends Model
     protected $fillable = [
         'cidade',
         'populacao',
+        'populacao_ano_passado',
     ];
 }

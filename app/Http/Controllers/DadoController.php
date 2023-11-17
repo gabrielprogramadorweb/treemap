@@ -11,23 +11,28 @@ class DadoController extends Controller
     {
         $dados = Dado::all();
         return view('editar_dados', compact('dados'));
+    }
 
-        
-        
-    }
    
-    public function listarCidades()
-    {
-        $cidades = Dado::orderBy('populacao', 'desc')->get();
-        return view('index', compact('cidades'));
-    }
 
     public function update(Request $request)
     {
+
+        $request->validate([
+            'cidade' => 'required|string',
+            'populacao' => 'required|numeric',
+            'populacao_ano_passado' => 'required|numeric',
+        ]);
+
         $cidade = $request->input('cidade');
         $populacao = $request->input('populacao');
+        $populacao_ano_passado = $request->input('populacao_ano_passado');
 
-        Dado::where('cidade', $cidade)->update(['populacao' => $populacao]);
+        // Atualizar ambas população e população_ano_passado
+        Dado::where('cidade', $cidade)->update([
+            'populacao' => $populacao,
+            'populacao_ano_passado' => $populacao_ano_passado,
+        ]);
 
         return redirect()->back()->with('success', 'Dados atualizados com sucesso!');
     }
@@ -37,17 +42,20 @@ class DadoController extends Controller
         // Validação dos dados do formulário
         $request->validate([
             'nova_cidade' => 'required|string',
-            'nova_populacao' => 'required|integer',
+            'nova_populacao' => 'required|integer|min:0',
+            'populacao_ano_passado' => 'required|integer|min:0',
         ]);
 
         // Obtém os dados do formulário
         $novaCidade = $request->input('nova_cidade');
         $novaPopulacao = $request->input('nova_populacao');
+        $populacaoAnoPassado = $request->input('populacao_ano_passado');
 
         // Cria um novo registro no banco de dados usando o modelo Dado
         Dado::create([
             'cidade' => $novaCidade,
             'populacao' => $novaPopulacao,
+            'populacao_ano_passado' => $populacaoAnoPassado,
         ]);
 
         // Redireciona de volta para a página de edição ou outra página desejada

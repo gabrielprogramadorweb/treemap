@@ -17,27 +17,27 @@ if ($conn->connect_error) {
 }
 
 // Consulta SQL para obter dados da tabela 'dados'
-$sql = 'SELECT cidade, populacao FROM dados';
+$sql = 'SELECT cidade, populacao, populacao_ano_passado FROM dados';
 
 // Executar a consulta e armazenar o resultado na variável $result
 $result = $conn->query($sql);
 
 // Formatar os dados para o Treemap
-$data = [['City', 'Parent', 'Population', 'Color']];
+$data = [['City', 'Parent', 'Population', 'PreviousPopulation', 'Color']];
 
 // Adicionar entrada para o Brasil com a população fixa
-$data[] = ['Brasil', null, 203080756, 203080756];
+$data[] = ['Brasil', null, 203080756, 190700000, '#00FF00FF'];
 
-// Isso verifica se o resultado da consulta ($result) contém mais de zero linhas. Em outras palavras, está verificando se há algum resultado retornado pela consulta, indicando que há registros no banco de dados.
-if ($result->num_rows > 0) {
-    // Este é um loop que percorre cada linha do resultado da consulta. fetch_assoc() é um método que retorna uma linha do conjunto de resultados como uma matriz associativa (um array onde os índices são nomes das colunas do banco de dados). A cada iteração do loop, a variável $row contém os dados de uma linha da tabela.
-    while ($row = $result->fetch_assoc()) {
-        //  Nesta linha, estamos adicionando uma nova entrada ao array $data, que será usado posteriormente para criar o gráfico Treemap. Cada entrada do array representa uma linha de dados no formato desejado para o Treemap. Os elementos do array correspondem às colunas da tabela no banco de dados.
-        $data[] = [$row['cidade'], 'Brasil', (int) $row['populacao'], (int) $row['populacao']];
-        // $row['cidade']: Representa o nome da cidade, obtido da coluna 'cidade' no banco de dados.
-        // 'Brasil': Indica que a cidade pertence ao Brasil. Esta é uma entrada fixa, pois todas as cidades estão sendo agrupadas sob o Brasil no Treemap.
-        // (int) $row['populacao']: Representa a população da cidade, convertida para um número inteiro. Isso é importante para garantir que os valores numéricos sejam tratados corretamente no gráfico.
-    }
+// Este é um loop que percorre cada linha do resultado da consulta.
+while ($row = $result->fetch_assoc()) {
+    $populacao = (int) $row['populacao'];
+    $populacao_ano_passado = (int) $row['populacao_ano_passado'];
+
+    // Calcular a mudança percentual
+    $mudanca_percentual = (($populacao - $populacao_ano_passado) / $populacao_ano_passado) * 100;
+
+    // Adicione entrada ao array $data com a cor determinada
+    $data[] = [$row['cidade'], 'Brasil', $populacao, $populacao_ano_passado, $mudanca_percentual];
 }
 
 // Fechar a conexão com o banco de dados
@@ -46,7 +46,6 @@ $conn->close();
 // Converter dados para formato JSON usando a função json_encode do PHP
 $json_data = json_encode($data, JSON_UNESCAPED_UNICODE);
 ?>
-
 
 @extends('layouts.main')
 
@@ -58,7 +57,7 @@ $json_data = json_encode($data, JSON_UNESCAPED_UNICODE);
 
     <head>
         <!-- Google Charts - Incluindo a biblioteca do Google Charts -->
-        <script type="text/javascript" src="http://www.gstatic.com/charts/loader.js"></script>
+        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
         <script type="text/javascript">
             // Carregar a biblioteca do Google Charts com o pacote 'treemap' quando estiver pronta
             google.charts.load('current', {
@@ -72,81 +71,117 @@ $json_data = json_encode($data, JSON_UNESCAPED_UNICODE);
                 // Usar dados dinâmicos obtidos do PHP convertidos para um objeto DataTable do Google Charts
                 var data = google.visualization.arrayToDataTable(<?php echo $json_data; ?>);
 
-                // Exibir os dados no console para depuração
-                console.log(data);
+                // Adicionar uma coluna com a cor intensificada com base na mudança percentual
+            data.addColumn('string', 'Cor');
+            for (var i = 1; i < data.getNumberOfRows(); i++) {
+                var mudanca_percentual = data.getValue(i, 4);
+                console.log("Mudança Percentual para " + data.getValue(i, 0) + ": " + mudanca_percentual);
+                var cor = intensificarCor('#00FF00FF', mudanca_percentual);
+                console.log("Cor para " + data.getValue(i, 0) + ": " + cor);
+                data.setValue(i, 5, cor);
+            }
 
-                // Criar um objeto TreeMap e associá-lo ao elemento HTML com o id 'chart_div'
-                tree = new google.visualization.TreeMap(document.getElementById('chart_div'));
-
-                // Desenhar o TreeMap com as opções de estilo
+                var tree = new google.visualization.TreeMap(document.getElementById('chart_div'));
+                
                 tree.draw(data, {
-                    minColor: '#f00', // Cor mínima (vermelho)
-                    midColor: '#00FF00FF', // Cor intermediária (verde claro)
-                    maxColor: '#0d0', // Cor máxima (verde escuro)
-                    headerHeight: 50, // Altura do cabeçalho
-                    fontColor: 'black', // Cor do texto
-                    showScale: true, // Exibir escala de cores
-                    generateTooltip: showFullTooltip // Função para gerar o conteúdo do tooltip personalizado
+                    minColor: '#f00',
+                    headerHeight: 50,
+                    fontColor: 'black',
+                    showScale: true,
+                    generateTooltip: showFullTooltip,
+                    maxColor: '#00FF00',
+                    highlightOnMouseOver:true,
+                    enableHighlight: true,
+                    useWeightedAverageForAggregation: true,
+                    generateTooltip: showFullTooltip
+                    
                 });
-                // Função para gerar o conteúdo do tooltip personalizado
+                
+                tree.draw(data, options);
+
                 function showFullTooltip(row, size, value) {
-                    // Se o mouse estiver sobre o Brasil (linha 0)
-                    if (row === 0) {
-                        // Obtém o valor da população do Brasil (posição 2 na tabela)
-                        var populacaoBrasil = data.getValue(0, 2);
+                    var cidade = data.getValue(row, 0);
 
-                        // Formata o valor usando pontos para milhares e vírgulas para decimais
+                    if (cidade === 'Brasil') {
+                        // Saída específica para o Brasil
+                        var populacaoBrasil = data.getValue(row, 2);
+                        var populacaoAnoPassadoBrasil = data.getValue(row, 3);
+
+                        var mudanca_percentual_brasil = ((populacaoBrasil - populacaoAnoPassadoBrasil) /
+                            populacaoAnoPassadoBrasil) * 100;
+
                         var formattedPopulacaoBrasil = populacaoBrasil.toLocaleString('pt-BR');
+                        var formattedPopulacaoAnoPassadoBrasil = populacaoAnoPassadoBrasil.toLocaleString('pt-BR');
+                        var formattedPorcentagemBrasil = mudanca_percentual_brasil ? (mudanca_percentual_brasil > 0 ? '+' :
+                            '') + mudanca_percentual_brasil.toFixed(2) + '%' : 'N/A';
 
-                        // Retorna o conteúdo HTML do tooltip personalizado para o Brasil
                         return '<div style="background:#fd9; padding:10px; border-style:solid">' +
-                            '<span style="font-family:Courier"><b>' + data.getValue(row, 0) + '</b></span><br>' +
-                            'População do Brasil: ' + formattedPopulacaoBrasil +
+                            '<span style="font-family:Courier"><b>Brasil</b></span><br>' +
+                            'População do Brasil | Censo 2022: ' + formattedPopulacaoBrasil +
+                            '<br>População do Brasil | Censo 2010: ' + formattedPopulacaoAnoPassadoBrasil +
+                            '<br>Mudança Percentual: ' + formattedPorcentagemBrasil + '' +
                             '</div>';
-                    }
+                    } else {
+                        // Saída padrão para outras cidades
+                        var populacaoCidade = data.getValue(row, 2);
+                        var populacaoAnoPassadoCidade = data.getValue(row, 3);
 
-                    // Se o mouse estiver sobre uma cidade (outra linha)
-                    else {
-                        // Obtém o valor da população da cidade
-                        var populacaoCidade = data.getValue(row, 3);
+                        var mudanca_percentual = ((populacaoCidade - populacaoAnoPassadoCidade) / populacaoAnoPassadoCidade) *
+                            100;
 
-                        // Obtém o valor da população do Brasil (posição 2 na tabela)
-                        var populacaoBrasil = data.getValue(0, 2);
-
-                        // Calcula a porcentagem da população da cidade em relação à população do Brasil
-                        var porcentagem = (populacaoCidade / populacaoBrasil) * 100;
-
-                        // Formata o valor usando pontos para milhares e vírgulas para decimais
                         var formattedPopulacaoCidade = populacaoCidade.toLocaleString('pt-BR');
-                        var formattedPorcentagem = porcentagem.toFixed(
-                            2); // Ajuste o número de casas decimais conforme necessário
+                        var formattedPopulacaoAnoPassadoCidade = populacaoAnoPassadoCidade.toLocaleString('pt-BR');
+                        var formattedPorcentagem = mudanca_percentual ? (mudanca_percentual > 0 ? '+' : '') + mudanca_percentual
+                            .toFixed(2) + '%' : 'N/A';
 
-                        // Retorna o conteúdo HTML do tooltip personalizado para uma cidade
                         return '<div style="background:#fd9; padding:10px; border-style:solid">' +
-                            '<span style="font-family:Courier"><b>' + data.getValue(row, 0) + '</b></span><br>' +
-                            'População da Cidade: ' + formattedPopulacaoCidade + '<br>' +
-                            'Porcentagem da População da Cidade em relação ao Brasil: ' + formattedPorcentagem + '%' +
+                            '<span style="font-family:Courier"><b>' + cidade + '</b></span><br>' +
+                            'População da Cidade | Censo 2022: ' + formattedPopulacaoCidade +
+                            '<br>População da Cidade | Censo 2010: ' + formattedPopulacaoAnoPassadoCidade +
+                            '<br>Mudança Percentual: ' + formattedPorcentagem + '' +
                             '</div>';
                     }
                 }
+
+
+                function formatarMudancaPercentual(percentual) {
+                    var formattedPorcentagem = percentual.toFixed(2);
+                    var cor = intensificarCor('#00FF00FF', percentual);
+                    return '<span style="color:' + cor + ';">' + formattedPorcentagem + '%</span>';
+                }
+
+                function intensificarCor(cor, percentual) {
+                    // Ajuste a intensidade da cor com base na mudança percentual
+                    var intensidade = Math.abs(percentual) / 100;
+                    var corIntensificada = intensificarCorRGB(cor, intensidade);
+                    return corIntensificada;
+                }
+
+                function intensificarCorRGB(cor, intensidade) {
+                    var r = parseInt(cor.substring(1, 3), 16);
+                    var g = parseInt(cor.substring(3, 5), 16);
+                    var b = parseInt(cor.substring(5, 7), 16);
+
+                    r = Math.round(r * intensidade);
+                    g = Math.round(g * intensidade);
+                    b = Math.round(b * intensidade);
+
+                    return '#' + (1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1);
+                }
             }
         </script>
-
     </head>
 
     <body>
-        <!-- Adicionando um contêiner Bootstrap -->
         <div class="container">
-            <!-- Adicionando um cabeçalho com o título -->
             <header class="text-center mt-4">
-                <h1>Gráfico Treemap - População de Cidades do Brasil </h1>
+                <h1>Gráfico Treemap - População de Cidades do Brasil</h1>
                 <h4>Segundo o <a
                         href="https://censo2022.ibge.gov.br/panorama/?utm_source=ibge&utm_medium=home&utm_campaign=portal"
                         target="_blank">IBGE</a></h4>
+                        <div class="intensidade"><p >intensidade de cores conforme tamanho da população</p></div>
+                        
             </header>
-
-            <!-- Div para exibir o gráfico -->
-            <script src="http://www.gstatic.com/charts/loader.js"></script>
 
             <div id="chart_div" style="width: 100%; height: 400px;"></div>
         </div>
@@ -157,13 +192,10 @@ $json_data = json_encode($data, JSON_UNESCAPED_UNICODE);
             </p>
         </div>
 
-        <!-- Adicionando a imagem do mouse -->
         <div class="d-flex justify-content-center align-items-center">
             <img src="/img/mouse.png" alt="Mouse" width="50">
         </div>
 
-        <!-- Adicionando o Bootstrap JS e jQuery (necessários para alguns recursos do Bootstrap) -->
-        <script src="http://www.gstatic.com/charts/loader.js"></script>
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
