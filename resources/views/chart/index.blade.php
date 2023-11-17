@@ -179,7 +179,7 @@ $json_data = json_encode($data, JSON_UNESCAPED_UNICODE);
                 <h4>Segundo o <a
                         href="https://censo2022.ibge.gov.br/panorama/?utm_source=ibge&utm_medium=home&utm_campaign=portal"
                         target="_blank">IBGE</a></h4>
-                        <div class="intensidade"><p >intensidade de cores conforme tamanho da população</p></div>
+                        <div class="intensidade"><p >Intensidade de cores conforme tamanho da população</p></div>
                         
             </header>
 
