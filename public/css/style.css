@@ -1,42 +1,25 @@
+@import url('https://fonts.googleapis.com/css2?family=Sora');
 
-  @import url('https://fonts.googleapis.com/css2?family=Sora');
 
-
-  *{
-    font-family: 'Sora', sans-serif ;
-  }
-.navbar-brand img{
-    width: 50px;
+* {
+  font-family: 'Sora', sans-serif;
 }
 
-.btn-voltar {
-    background-color: #28a745; /* Cor verde */
-    color: #fff; /* Cor do texto */
-    border: none; /* Removendo a borda */
-    padding: 10px 20px; /* Espaçamento interno */
-    border-radius: 5px; /* Borda arredondada */
-    cursor: pointer; /* Cursor apontando */
-    align-items: center;
-    text-align: center;
+.navbar-brand img {
+  width: 70px;
+}
 
-  }
-
-  /* Efeito de hover */
-  .btn-voltar:hover {
-    background-color: #218838; 
-    color: #fff;/* Cor verde mais escura no hover */
-  }
-
-  .intensidade{
-    right: 0%;
-    position: relative;
-    margin-left: 64%;
+.intensidade {
+  right: 0%;
+  position: relative;
+  margin-left: 64%;
 
 
-  }
-  .intensidade p{
-    right: 0%;
-    font-size: 0.8em;
-    position: relative;
-    margin-bottom: -2%;
-  }
+}
+
+.intensidade p {
+  right: 0%;
+  font-size: 0.8em;
+  position: relative;
+  margin-bottom: -2%;
+}

@@ -72,17 +72,17 @@ $json_data = json_encode($data, JSON_UNESCAPED_UNICODE);
                 var data = google.visualization.arrayToDataTable(<?php echo $json_data; ?>);
 
                 // Adicionar uma coluna com a cor intensificada com base na mudança percentual
-            data.addColumn('string', 'Cor');
-            for (var i = 1; i < data.getNumberOfRows(); i++) {
-                var mudanca_percentual = data.getValue(i, 4);
-                console.log("Mudança Percentual para " + data.getValue(i, 0) + ": " + mudanca_percentual);
-                var cor = intensificarCor('#00FF00FF', mudanca_percentual);
-                console.log("Cor para " + data.getValue(i, 0) + ": " + cor);
-                data.setValue(i, 5, cor);
-            }
+                data.addColumn('string', 'Cor');
+                for (var i = 1; i < data.getNumberOfRows(); i++) {
+                    var mudanca_percentual = data.getValue(i, 4);
+                    console.log("Mudança Percentual para " + data.getValue(i, 0) + ": " + mudanca_percentual);
+                    var cor = intensificarCor('#00FF00FF', mudanca_percentual);
+                    console.log("Cor para " + data.getValue(i, 0) + ": " + cor);
+                    data.setValue(i, 5, cor);
+                }
 
                 var tree = new google.visualization.TreeMap(document.getElementById('chart_div'));
-                
+
                 tree.draw(data, {
                     minColor: '#f00',
                     headerHeight: 50,
@@ -94,9 +94,8 @@ $json_data = json_encode($data, JSON_UNESCAPED_UNICODE);
                     enableHighlight: true,
                     useWeightedAverageForAggregation: true,
                     generateTooltip: showFullTooltip
-                    
                 });
-                
+
                 tree.draw(data, options);
 
                 function showFullTooltip(row, size, value) {
@@ -142,7 +141,6 @@ $json_data = json_encode($data, JSON_UNESCAPED_UNICODE);
                             '</div>';
                     }
                 }
-
 
                 function formatarMudancaPercentual(percentual) {
                     var formattedPorcentagem = percentual.toFixed(2);
