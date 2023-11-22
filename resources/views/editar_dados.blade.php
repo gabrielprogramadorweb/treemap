@@ -1,62 +1,8 @@
-<?php
-
-// Conectar ao banco de dados (substitua com suas credenciais)
-$servername = 'localhost';
-$username = 'root';
-$password = '';
-$dbname = 'dados';
-
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// Verificar a conexão
-if ($conn->connect_error) {
-    die('Conexão falhou: ' . $conn->connect_error);
-} else {
-}
-
-// Consulta SQL para obter dados da tabela 'dados'
-$sql = 'SELECT cidade, populacao FROM dados';
-$result = $conn->query($sql);
-
-// Formatar os dados para o Treemap
-$data = [['City', 'Parent', 'Population', 'Color']];
-
-// Adicionar entrada para o país
-$data[] = ['Global', null, 0, 0];
-
-if ($result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
-        // Adicionar cada cidade como uma linha de dados
-        $data[] = [$row['cidade'], 'Global', (int) $row['populacao'], (int) $row['populacao']];
-    }
-}
-
-// Fechar a conexão com o banco de dados
-$conn->close();
-
-// Converter dados para formato JSON
-$json_data = json_encode($data, JSON_UNESCAPED_UNICODE);
-?>
-
 @extends('layouts.main')
 
 @section('title', 'Editar Dados')
 
 @section('content')
-    <!DOCTYPE html>
-    <html lang="en">
-
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Editar Dados</title>
-        <!-- Adicione os links para os arquivos do Bootstrap -->
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    </head>
-
     <body class="bg-light">
         <div class="container mt-5">
             <div class="row">

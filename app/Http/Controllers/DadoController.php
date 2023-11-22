@@ -9,8 +9,22 @@ class DadoController extends Controller
 {
     public function index()
     {
-        $dados = Dado::all();
-        return view('editar_dados', compact('dados'));
+        // Obtendo dados usando Eloquent
+        $dados = Dado::select('cidade')->get();
+
+        // Dados formatados para o Treemap
+        $data = [['City', 'Parent', 'Population', 'Color']];
+        $data[] = ['Global', null, 0, 0];
+
+        foreach ($dados as $dado) {
+            $data[] = [$dado->cidade, 'Global', (int)$dado->populacao, (int)$dado->populacao];
+        }
+
+        // Conversão para JSON
+        $json_data = json_encode($data, JSON_UNESCAPED_UNICODE);
+
+        // Passar os dados para a visualização
+        return view('editar_dados', compact('dados', 'json_data'));
     }
 
    

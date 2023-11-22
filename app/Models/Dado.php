@@ -13,5 +13,6 @@ class Dado extends Model
 
     // Se você não tiver colunas de data de criação/atualização no seu banco de dados, você pode desabilitar automaticamente:
     public $timestamps = false;
+    
 }
 
